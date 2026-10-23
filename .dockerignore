@@ -1,0 +1,12 @@
+.git
+.DS_Store
+.venv
+venv
+__pycache__
+*.py[cod]
+.pytest_cache
+.coverage
+reports
+tmp
+tests
+docs

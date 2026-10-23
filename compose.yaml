@@ -1,0 +1,61 @@
+services:
+  assurebench-volume-init:
+    build: .
+    entrypoint: []
+    command:
+      - python3
+      - -c
+      - import os; path = "/var/lib/assurebench"; os.chmod(path, 0o770); os.chown(path, 10001, 0)
+    user: "0:0"
+    volumes:
+      - assurebench-work:/var/lib/assurebench
+    network_mode: none
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - FOWNER
+    restart: "no"
+
+  assurebench:
+    build: .
+    user: "0:0"
+    depends_on:
+      assurebench-volume-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1::8765"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - assurebench-work:/var/lib/assurebench
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=1g
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+    pids_limit: 256
+    mem_limit: 1g
+    cpus: 2
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - import urllib.request; urllib.request.urlopen("http://127.0.0.1:8765/api/bootstrap", timeout=2)
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  assurebench-work:
+    name: assurebench-work

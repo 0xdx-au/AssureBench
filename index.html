@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <meta name="description" content="AssureBench is a local-first DevSecOps assurance workbench for source, dependencies, infrastructure, and threat-model evidence.">
+    <title>AssureBench | DevSecOps Assurance</title>
+    <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="masthead">
+        <div>
+          <div class="product-brand">
+            <img class="product-logo" src="/assets/brand/assurebench-horizontal-dark.svg" width="530" height="83" alt="AssureBench — evidence-led DevSecOps assurance">
+            <h1 class="visually-hidden">AssureBench</h1>
+            <p class="subtitle">Assess repository architecture, dependencies, infrastructure, and source with evidence-led security analysis.</p>
+          </div>
+        </div>
+        <div class="system-status" aria-live="polite">
+          <span class="status-light"></span>
+          <span id="controller-status">CONNECTING TO LOCAL CONTROLLER</span>
+        </div>
+      </header>
+
+      <section class="upload-panel" aria-labelledby="upload-heading">
+        <div class="section-heading">
+          <span class="section-index">01</span>
+          <h2 id="upload-heading">Choose a repository archive</h2>
+        </div>
+        <p class="upload-intro">Upload a ZIP downloaded from GitHub. Your archive is analyzed locally and removed after the scan.</p>
+        <div class="upload-controls">
+          <label class="file-picker">
+            <span>SELECT GITHUB ZIP</span>
+            <input id="archive-input" type="file" accept=".zip,application/zip">
+          </label>
+          <button id="start-button" class="button button-primary" type="button" disabled>ANALYZE REPOSITORY</button>
+          <button id="rerun-button" class="button" type="button" disabled>RERUN</button>
+          <button id="new-version-button" class="button" type="button" disabled>NEW REPORT VERSION</button>
+          <a id="new-scan-link" class="button" href="/" target="_blank" rel="noopener noreferrer">NEW SCAN · OPEN IN NEW TAB</a>
+        </div>
+        <p id="upload-name" class="upload-name">No archive selected · ZIP limit 100 MiB</p>
+        <p id="upload-status" class="action-note" role="status">Static scanners inspect source without running its build or test scripts.</p>
+        <details class="safety-details">
+          <summary>Scan safety and coverage</summary>
+          <p>The archive is path-validated, extracted into a private temporary folder, mounted read-only in pinned containers, and deleted when the scan ends. Scanners have network access for rules and vulnerability data. Project commands are not executed.</p>
+          <p>Checks include SAST, secrets, dependencies, IaC, SBOM, GitHub Actions, shell scripts, architecture inference, and framework evidence mapping. Dynamic and live-deployment checks are outside this source scan.</p>
+        </details>
+        <div id="upload-preview" class="upload-preview" hidden>
+          <div class="upload-preview-meta">
+            <strong id="preview-project"></strong>
+            <span id="preview-inventory"></span>
+          </div>
+          <div id="preview-diagram" class="topology-diagram-wrap"></div>
+          <details class="source-details">
+            <summary>View Mermaid source</summary>
+            <pre id="preview-mermaid" class="diagram"></pre>
+          </details>
+        </div>
+      </section>
+
+      <section class="scan-panel" aria-labelledby="scan-heading">
+        <div class="scan-toolbar">
+          <div class="section-heading">
+            <span class="section-index">02</span>
+            <h2 id="scan-heading">Scan progress</h2>
+          </div>
+          <div class="run-meta">
+            <span id="workspace-name">TARGET: UPLOADED ZIP</span>
+            <span id="run-number">RUN: —</span>
+          </div>
+        </div>
+
+        <ol id="stage-list" class="stage-list" aria-label="Security scan stages"></ol>
+
+        <div class="terminal-window">
+          <div class="terminal-titlebar">
+            <div class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></div>
+            <span>LOCAL RUN OUTPUT</span>
+            <span id="terminal-state" class="terminal-state">IDLE</span>
+          </div>
+          <div id="terminal" class="terminal" role="log" aria-live="polite" aria-relevant="additions text">
+            <p class="terminal-line"><span class="prompt">&gt;</span> Awaiting scan authorization.</p>
+          </div>
+        </div>
+
+        <div class="actions">
+          <span id="action-note" class="action-note">Select a GitHub ZIP to begin.</span>
+        </div>
+      </section>
+
+      <section id="results-panel" class="results-panel" aria-labelledby="results-heading" hidden>
+        <div class="results-header">
+          <div class="section-heading">
+            <span class="section-index">03</span>
+            <h2 id="results-heading">Assessment report</h2>
+          </div>
+          <div class="report-actions">
+            <button id="pdf-button" class="button" type="button">EXPORT PDF</button>
+            <span class="action-note">Print dialog: choose Save as PDF.</span>
+            <button id="copy-button" class="button button-primary" type="button">COPY REPORT</button>
+            <span id="copy-status" class="action-note" aria-live="polite"></span>
+          </div>
+        </div>
+        <p id="report-identity" class="report-identity"></p>
+        <div id="finding-summary" class="finding-summary" aria-label="Finding counts"></div>
+        <div id="finding-list" class="finding-list"></div>
+        <section class="package-vulnerability-report" aria-labelledby="package-vulnerability-heading">
+          <div class="section-heading">
+            <span class="section-index">03</span>
+            <h2 id="package-vulnerability-heading">Vulnerable packages and affected files</h2>
+          </div>
+          <p class="threat-model-note">Package advisories are grouped by package and version. Manifest/lockfile and SBOM paths are evidence locations; dependency scanning does not prove vulnerable source call sites.</p>
+          <div id="package-vulnerabilities"></div>
+        </section>
+        <section class="threat-model-report" aria-labelledby="threat-model-heading">
+          <div class="section-heading">
+            <span class="section-index">03</span>
+            <h2 id="threat-model-heading">Threat model and attack scenarios</h2>
+          </div>
+          <p class="threat-model-note">STRIDE is a structured set of threat hypotheses, not proof of exploitability. MITRE ATT&amp;CK describes adversary behavior; technique IDs below are conditional candidates, not vulnerability identifiers.</p>
+          <div id="stride-table" class="table-scroll"></div>
+          <div class="topology-block">
+            <h3>Top three finding-based scenarios</h3>
+            <div id="threat-scenarios" class="threat-scenarios"></div>
+          </div>
+        </section>
+        <section class="topology-report" aria-labelledby="topology-heading">
+          <div class="section-heading">
+            <span class="section-index">04</span>
+            <h2 id="topology-heading">Application topology</h2>
+          </div>
+          <p id="topology-scope" class="topology-scope"></p>
+          <div id="application-topology-diagram" class="topology-diagram-wrap"></div>
+          <details class="source-details">
+            <summary>View Mermaid source</summary>
+            <pre id="application-topology-mermaid" class="diagram"></pre>
+          </details>
+          <div class="topology-block">
+            <h3>End-to-end application flow</h3>
+            <ol id="topology-flow" class="topology-flow"></ol>
+          </div>
+          <div class="topology-block">
+            <h3>Trust zones</h3>
+            <div id="topology-zones" class="table-scroll"></div>
+          </div>
+          <div class="topology-block">
+            <h3>Interfaces and data flows</h3>
+            <div id="topology-interfaces" class="table-scroll"></div>
+          </div>
+          <div class="topology-block">
+            <h3>Data and semantic-model mappings</h3>
+            <div id="topology-mappings" class="table-scroll"></div>
+            <p class="topology-caveat">Mappings are inferred from uploaded repository files; they do not establish deployed database schemas or runtime connectivity.</p>
+          </div>
+          <details class="framework-details">
+            <summary>Routes and detected source inventory</summary>
+            <div id="topology-routes" class="table-scroll"></div>
+            <div id="topology-inventory"></div>
+            <ul id="topology-unknowns" class="topology-unknowns"></ul>
+          </details>
+        </section>
+        <div class="report-visuals">
+          <details class="framework-details">
+            <summary>SBOM dependency graph</summary>
+            <p id="dependency-graph-summary">Waiting for Syft SBOM data.</p>
+            <pre id="dependency-graph" class="diagram"></pre>
+          </details>
+          <details class="framework-details">
+            <summary>Scan architecture</summary>
+            <p>This diagram describes the scan automation, not the deployed application architecture.</p>
+            <pre id="architecture-diagram" class="diagram"></pre>
+          </details>
+        </div>
+        <details class="framework-details">
+          <summary>Framework mapping and coverage details</summary>
+          <p>The copied report maps scan evidence to the OWASP Top 10:2025, NIST CSF 2.0, NIST SP 800-218 SSDF and OWASP SAMM 2.0. Mapping is evidence-based and does not imply certification or maturity scoring.</p>
+          <p>The report includes a UUID-bound SHA-256 integrity fingerprint; it is not a digital signature or signer identity.</p>
+        </details>
+        <details class="framework-details">
+          <summary>View or copy full Markdown report</summary>
+          <label class="report-label" for="report-text">FULL REPORT</label>
+          <textarea id="report-text" readonly spellcheck="false" aria-label="Generated security report"></textarea>
+        </details>
+        <article id="print-report" class="print-report" aria-hidden="true"></article>
+      </section>
+
+      <footer>
+        <span>LOCAL ONLY · NO ACCOUNT OR SECRET INPUT REQUIRED</span>
+        <span>STOP THE CONTROLLER WITH CTRL-C IN ITS TERMINAL</span>
+      </footer>
+    </main>
+  </body>
+</html>

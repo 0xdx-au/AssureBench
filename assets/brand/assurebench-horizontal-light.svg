@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="166" viewBox="0 0 1060 166" role="img" aria-labelledby="title desc">
+<title id="title">AssureBench</title>
+<desc id="desc">Continuous DevSecOps loop with code, verified security shield and evidence metrics, followed by AssureBench wordmark</desc>
+<!-- EDITABLE: change colors in the palette values below, text in text elements, and paths in assurebench-mark. -->
+<g transform="translate(12 9) scale(1.08)">
+<g id="assurebench-mark" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Infinity loop = continuous DevOps; code = development; shield = security; bars = evidence/assessment. -->
+  <path id="continuous-loop-track" d="M 122 67 C 103 40 88 28 61 28 C 37 28 20 46 20 67 C 20 90 37 106 61 106 C 87 106 103 93 122 67 C 143 38 159 28 186 28 C 209 28 226 46 226 67 C 226 90 209 106 186 106 C 160 106 143 95 122 67" stroke="#C8DED0" stroke-width="13.5"/>
+  <path id="dev-loop-highlight" d="M 122 67 C 103 40 88 28 61 28 C 37 28 20 46 20 67 C 20 90 37 106 61 106 C 87 106 103 93 122 67" stroke="#0E9F4A" stroke-width="13.5"/>
+  <path id="ops-loop-highlight" d="M 122 67 C 143 38 159 28 186 28 C 209 28 226 46 226 67" stroke="#0E9F4A" stroke-width="13.5"/>
+  <g id="code-symbol" stroke="#124C2A" stroke-width="4.7">
+    <path d="M 55 54 L 43 67 L 55 80"/><path d="M 81 54 L 93 67 L 81 80"/><path d="M 73 51 L 63 83"/>
+  </g>
+  <g id="evidence-bars" stroke="#124C2A" stroke-width="7">
+    <path d="M 165 78 L 165 70"/><path d="M 184 78 L 184 59"/><path d="M 203 78 L 203 49"/>
+  </g>
+  <path id="shield-cutout" d="M 122 31 L 146 42 L 146 65 C 146 84 136 99 122 105 C 108 99 98 84 98 65 L 98 42 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="13" />
+  <path id="assurance-shield" d="M 122 31 L 146 42 L 146 65 C 146 84 136 99 122 105 C 108 99 98 84 98 65 L 98 42 Z" stroke="#0E9F4A" stroke-width="5.3"/>
+  <path id="verified-evidence" d="M 111 68 L 119 76 L 134 58" stroke="#124C2A" stroke-width="5.8"/>
+</g>
+</g>
+<g id="wordmark" font-family="Inter, Inter Display, Arial, sans-serif" font-weight="700" font-size="70" letter-spacing="-2.6">
+  <text x="296" y="88" fill="#0E9F4A">Assure</text>
+  <text x="536" y="88" fill="#14271A">Bench</text>
+</g>
+<text id="descriptor" x="300" y="126" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="16" letter-spacing="1.5" fill="#486854">EVIDENCE-LED DEVSECOPS ASSURANCE</text>
+</svg>

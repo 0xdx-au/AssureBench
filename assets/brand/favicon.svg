@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="AssureBench">
+<rect width="64" height="64" rx="15" fill="#061009"/>
+<path d="M32 9 L50 17 L50 33 C50 44 42 52 32 56 C22 52 14 44 14 33 L14 17 Z" fill="none" stroke="#56F981" stroke-width="4" stroke-linejoin="round"/>
+<path d="M22 32 L29 39 L43 24" stroke="#D8FFE1" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
